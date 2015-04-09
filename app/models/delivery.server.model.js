@@ -16,6 +16,7 @@ var validatePrice = function () {
 var DeliverySchema = new Schema({
 	price: {
 		type: Number,
+		default: 3,
 		validate: [validatePrice, 'Price Must be set']
 	},
 	created: {

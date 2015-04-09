@@ -9,6 +9,10 @@ module.exports = function(app) {
 		.get(deliveries.list)
 		.post(users.requiresLogin, deliveries.create);
 
+	// Deliveries Routes
+	app.route('/deliveries/multiple')
+		.post(users.requiresLogin, deliveries.createMultiple);
+
 	app.route('/deliveries/:deliveryId')
 		.get(deliveries.read)
 		.put(users.requiresLogin, deliveries.hasAuthorization, deliveries.update)

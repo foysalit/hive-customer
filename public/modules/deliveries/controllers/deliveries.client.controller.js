@@ -25,20 +25,21 @@ angular.module('deliveries').controller('DeliveriesController', [
 		// Create new Delivery
 		$scope.create = function() {
 			// Create new Delivery object
-			return console.log($scope.deliveries);
-			var delivery = new Deliveries ({
+			Deliveries.saveMultiple($scope.deliveries).success(function (response) {
+				
+			}).error(function (err) {
 				
 			});
 
 			// Redirect after save
-			delivery.$save(function(response) {
+			/*delivery.$save(function(response) {
 				$location.path('deliveries/' + response._id);
 
 				// Clear form fields
 				$scope.name = '';
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
-			});
+			});*/
 		};
 
 		$scope.addDelivery = function () {
@@ -80,7 +81,7 @@ angular.module('deliveries').controller('DeliveriesController', [
 
 		// Find a list of Deliveries
 		$scope.find = function() {
-			$scope.deliveries = Deliveries.query();
+			$scope.deliveries = Deliveries.resource.query();
 		};
 
 		$scope.getConsumers = function () {
@@ -89,7 +90,7 @@ angular.module('deliveries').controller('DeliveriesController', [
 
 		// Find existing Delivery
 		$scope.findOne = function() {
-			$scope.delivery = Deliveries.get({ 
+			$scope.delivery = Deliveries.resource.get({ 
 				deliveryId: $stateParams.deliveryId
 			});
 		};

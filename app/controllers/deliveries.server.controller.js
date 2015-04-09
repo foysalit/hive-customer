@@ -27,6 +27,33 @@ exports.create = function(req, res) {
 };
 
 /**
+ * Create multiple Deliveries
+ */
+exports.createMultiple = function(req, res) {
+	var deliveries = [];
+
+	_.each(req.body, function (delivery) {
+		deliveries.push({
+			consumer: delivery.consumer._id,
+			user: req.user
+		});
+	});
+
+	Delivery.create(deliveries, function(err, result) {
+		console.log(err, result);
+		if (err) {
+			return res.status(400).send({
+				message: errorHandler.getErrorMessage(err)
+			});
+		} else {
+			res.json({
+				error: false
+			});
+		}
+	});
+};
+
+/**
  * Show the current Delivery
  */
 exports.read = function(req, res) {
