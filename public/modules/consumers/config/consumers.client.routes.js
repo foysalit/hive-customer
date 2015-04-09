@@ -10,7 +10,7 @@ angular.module('consumers').config(['$stateProvider',
 			templateUrl: 'modules/consumers/views/list-consumers.client.view.html'
 		}).
 		state('createConsumer', {
-			url: '/consumers/create',
+			url: '/consumers/create?from_delivery',
 			templateUrl: 'modules/consumers/views/create-consumer.client.view.html'
 		}).
 		state('viewConsumer', {

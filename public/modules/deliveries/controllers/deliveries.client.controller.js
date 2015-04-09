@@ -1,15 +1,33 @@
 'use strict';
 
 // Deliveries controller
-angular.module('deliveries').controller('DeliveriesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Deliveries',
-	function($scope, $stateParams, $location, Authentication, Deliveries) {
+angular.module('deliveries').controller('DeliveriesController', [
+	'$scope', '$stateParams', '$location', 'Authentication', 'Deliveries', 'Consumers',
+	function($scope, $stateParams, $location, Authentication, Deliveries, Consumers) {
 		$scope.authentication = Authentication;
+
+		function initDeliverForm () {
+			var model = {
+				consumer: '',
+				product: ''
+			};
+
+			if ($scope.deliveries) {
+				$scope.deliveries.push(model);
+			} else {
+				$scope.deliveries = [model];
+			}
+		}
+
+		//if (!$stateParams.from_consumer)
+			initDeliverForm();
 
 		// Create new Delivery
 		$scope.create = function() {
 			// Create new Delivery object
+			return console.log($scope.deliveries);
 			var delivery = new Deliveries ({
-				name: this.name
+				
 			});
 
 			// Redirect after save
@@ -21,6 +39,15 @@ angular.module('deliveries').controller('DeliveriesController', ['$scope', '$sta
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
+		};
+
+		$scope.addDelivery = function () {
+			if ($scope.deliveries.length >= 3) {
+				$scope.globalError = 'Max 3 deliveries are allowed!';
+				return;
+			}
+
+			initDeliverForm();
 		};
 
 		// Remove existing Delivery
@@ -56,11 +83,22 @@ angular.module('deliveries').controller('DeliveriesController', ['$scope', '$sta
 			$scope.deliveries = Deliveries.query();
 		};
 
+		$scope.getConsumers = function () {
+			$scope.consumers = Consumers.query();
+		};
+
 		// Find existing Delivery
 		$scope.findOne = function() {
 			$scope.delivery = Deliveries.get({ 
 				deliveryId: $stateParams.deliveryId
 			});
+		};
+
+		$scope.calculateTotal = function () {
+			if (!$scope.deliveries)
+				return 0;
+
+			return $scope.deliveries.length * 3;	
 		};
 	}
 ]);

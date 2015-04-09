@@ -1,8 +1,9 @@
 'use strict';
 
 // Consumers controller
-angular.module('consumers').controller('ConsumersController', ['$scope', '$stateParams', '$location', 'Authentication', 'Consumers',
-	function($scope, $stateParams, $location, Authentication, Consumers) {
+angular.module('consumers').controller('ConsumersController', [
+	'$scope', '$state', '$stateParams', '$location', 'Authentication', 'Consumers',
+	function($scope, $state, $stateParams, $location, Authentication, Consumers) {
 		$scope.authentication = Authentication;
 
 		// Clear form fields
@@ -10,6 +11,7 @@ angular.module('consumers').controller('ConsumersController', ['$scope', '$state
 			$scope.firstName = '';
 			$scope.lastName = '';
 			$scope.address = '';
+			$scope.apartment = '';
 			$scope.phone = '';
 		}
 
@@ -20,14 +22,19 @@ angular.module('consumers').controller('ConsumersController', ['$scope', '$state
 				firstName: this.firstName,
 				lastName: this.lastName,
 				address: this.address,
+				apartment: this.apartment,
 				phone: this.phone
 			});
 
 			// Redirect after save
 			consumer.$save(function(response) {
-				$location.path('consumers/' + response._id);
-
 				initializeForm();
+
+				if ($stateParams.from_delivery) {
+					return $state.go('createDelivery', {from_consumer: true});
+				}
+
+				return $location.path('consumers/' + response._id);
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});

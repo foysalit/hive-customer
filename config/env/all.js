@@ -14,7 +14,9 @@ module.exports = {
 		lib: {
 			css: [
 				'public/lib/bootstrap/dist/css/bootstrap.css',
-				'public/lib/bootstrap/dist/css/bootstrap-theme.css',
+				'http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css',
+				'public/lib/angular-ui-select/dist/select.min.css',
+				//'public/lib/bootstrap/dist/css/bootstrap-theme.css',
 			],
 			js: [
 				'public/lib/angular/angular.js',
@@ -25,7 +27,8 @@ module.exports = {
 				'public/lib/angular-sanitize/angular-sanitize.js', 
 				'public/lib/angular-ui-router/release/angular-ui-router.js',
 				'public/lib/angular-ui-utils/ui-utils.js',
-				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js'
+				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
+				'public/lib/angular-ui-select/dist/select.min.js'
 			]
 		},
 		css: [

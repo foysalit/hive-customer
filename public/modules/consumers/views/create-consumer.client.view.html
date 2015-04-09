@@ -1,6 +1,6 @@
 <section data-ng-controller="ConsumersController">
     <div class="page-header">
-        <h1>New Consumer</h1>
+        <h1>New Order</h1>
     </div>
     <div class="col-md-12">
         <form class="form-horizontal" data-ng-submit="create()" novalidate>
@@ -21,6 +21,12 @@
                     <label class="control-label" for="name">Address</label>
                     <div class="controls">
                         <input type="text" data-ng-model="address" id="address" class="form-control" placeholder="Address" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="apartment">Apartment</label>
+                    <div class="controls">
+                        <input type="text" data-ng-model="apartment" id="apartment" class="form-control" placeholder="Apartment" required>
                     </div>
                 </div>
                 <div class="form-group">
