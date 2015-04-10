@@ -1,0 +1,22 @@
+<div class="modal-header">
+    <h3 class="modal-title">Order Has Been Placed!</h3>
+</div>
+<div class="modal-body">
+    <h2>Delivery To Compartments</h2>
+
+    <ul>
+        <li ng-repeat="delivery in deliveries">
+            #{{$index+1}} Delivery {{delivery.consumer.firstName}} {{delivery.consumer.lastName}} = Compartment #{{delivery.compartment}}
+        </li>
+    </ul>
+</div>
+<div class="modal-footer">
+    <a 
+        ng-click="closeConfirmation()"
+        class="btn btn-primary" 
+        href="#!/deliveries/create">Add More</a>
+    <a 
+        ng-click="closeConfirmation()"
+        class="btn btn-success" 
+        href="#!/deliveries">View Deliveries</a>
+</div>

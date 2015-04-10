@@ -4,12 +4,21 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-	Schema = mongoose.Schema;
+	Schema = mongoose.Schema,
+	_ = require('lodash');
 
-var validatePrice = function () {
-	return this.price > 0;
+var validation = {
+	price: function () {
+		return this.price > 0;
+	},
+	product: function () {
+		var availableProducts = ['large-pizza', 'medium-pizza', 'small-pizza'];
+		return this.product && _.contains(availableProducts, this.product);
+	},
+	compartment: function () {
+		return this.compartment && this.compartment <= 3 && this.compartment > 0;
+	}
 };
-
 /**
  * Delivery Schema
  */
@@ -17,7 +26,15 @@ var DeliverySchema = new Schema({
 	price: {
 		type: Number,
 		default: 3,
-		validate: [validatePrice, 'Price Must be set']
+		validate: [validation.price, 'Price Must be set']
+	},
+	compartment: {
+		type: Number,
+		validate: [validation.compartment, 'Compartment is not valid']
+	},
+	product: {
+		type: String,
+		validate: [validation.product, 'Product is not valid']
 	},
 	created: {
 		type: Date,

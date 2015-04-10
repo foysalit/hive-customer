@@ -2,14 +2,15 @@
 
 // Deliveries controller
 angular.module('deliveries').controller('DeliveriesController', [
-	'$scope', '$stateParams', '$location', 'Authentication', 'Deliveries', 'Consumers',
-	function($scope, $stateParams, $location, Authentication, Deliveries, Consumers) {
+	'$scope', '$stateParams', '$location', '$modal', 'Authentication', 'Deliveries', 'Consumers',
+	function($scope, $stateParams, $location, $modal, Authentication, Deliveries, Consumers) {
 		$scope.authentication = Authentication;
 
 		function initDeliverForm () {
 			var model = {
 				consumer: '',
-				product: ''
+				product: '',
+				compartment: ($scope.deliveries) ? $scope.deliveries.length + 1 : 1
 			};
 
 			if ($scope.deliveries) {
@@ -19,27 +20,42 @@ angular.module('deliveries').controller('DeliveriesController', [
 			}
 		}
 
+		function showConfirmation (deliveries) {
+			var modalInstance = $modal.open({
+				templateUrl: 'modules/deliveries/views/confirmation-modal.client.view.html',
+				controller: function ($scope, $modalInstance, deliveries) {
+					$scope.deliveries = deliveries;
+					
+					$scope.closeConfirmation = function () {
+						$modalInstance.dismiss('cancel');
+					};
+				},
+				//size: 'size',
+				resolve: {
+					deliveries: function () {
+						return deliveries;
+					}
+				}
+			});
+		}
+
 		//if (!$stateParams.from_consumer)
 			initDeliverForm();
 
 		// Create new Delivery
 		$scope.create = function() {
 			// Create new Delivery object
+			//return console.log($scope.deliveries);
 			Deliveries.saveMultiple($scope.deliveries).success(function (response) {
-				
+				if (response.error) {
+					return console.log('error', response);
+				}
+
+				showConfirmation($scope.deliveries);
 			}).error(function (err) {
-				
+				console.log('error', err);
+				$scope.error = err.data.message;
 			});
-
-			// Redirect after save
-			/*delivery.$save(function(response) {
-				$location.path('deliveries/' + response._id);
-
-				// Clear form fields
-				$scope.name = '';
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});*/
 		};
 
 		$scope.addDelivery = function () {

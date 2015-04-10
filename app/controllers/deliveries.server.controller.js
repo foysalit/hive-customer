@@ -33,10 +33,9 @@ exports.createMultiple = function(req, res) {
 	var deliveries = [];
 
 	_.each(req.body, function (delivery) {
-		deliveries.push({
-			consumer: delivery.consumer._id,
-			user: req.user
-		});
+		delivery.user = req.user;
+		delivery.consumer = delivery.consumer._id;
+		deliveries.push(delivery);
 	});
 
 	Delivery.create(deliveries, function(err, result) {
@@ -47,7 +46,8 @@ exports.createMultiple = function(req, res) {
 			});
 		} else {
 			res.json({
-				error: false
+				error: false,
+				deliveries: deliveries
 			});
 		}
 	});

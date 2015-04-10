@@ -11,7 +11,7 @@
             <!-- google maps check for radius of the address of the order and reject if it falls out of the area. -->
             <!-- add products select options small, medium, large pizza -->
                 <div class="form-group">
-                    <label class="control-label" for="price">Select Consumer</label>
+                    <label class="control-label" for="price">Select Customer</label>
                     <ui-select 
                         ng-model="delivery.consumer" 
                         theme="select2" 
@@ -36,6 +36,33 @@
                             </small>
                         </ui-select-choices>
                     </ui-select>
+                </div>
+
+                <div class="form-group">
+                    <label class="radio-inline">
+                        <input 
+                            type="radio"
+                            ng-model="delivery.product"
+                            name="product-{{$index}}" 
+                            value="large-pizza">
+                        Large Pizza
+                    </label>
+                    <label class="radio-inline">
+                        <input 
+                            type="radio"
+                            ng-model="delivery.product"
+                            name="product-{{$index}}" 
+                            value="medium-pizza">
+                        Medium Pizza
+                    </label>
+                    <label class="radio-inline">
+                        <input 
+                            type="radio"
+                            ng-model="delivery.product"
+                            name="product-{{$index}}" 
+                            value="small-pizza">
+                        Small Pizza
+                    </label>
                 </div>
 
                 <div class="form-group">
