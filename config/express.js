@@ -6,6 +6,7 @@
 var fs = require('fs'),
 	http = require('http'),
 	https = require('https'),
+	socketio = require('socket.io'),
 	express = require('express'),
 	morgan = require('morgan'),
 	bodyParser = require('body-parser'),
@@ -140,6 +141,7 @@ module.exports = function(db) {
 		});
 	});
 
+	var server = null;
 	if (process.env.NODE_ENV === 'secure') {
 		// Log SSL usage
 		console.log('Securely using https protocol');
@@ -149,15 +151,22 @@ module.exports = function(db) {
 		var certificate = fs.readFileSync('./config/sslcerts/cert.pem', 'utf8');
 
 		// Create HTTPS Server
-		var httpsServer = https.createServer({
+		server = https.createServer({
 			key: privateKey,
 			cert: certificate
 		}, app);
 
 		// Return HTTPS server instance
-		return httpsServer;
+		// return httpsServer;
+	} else {
+		server = http.createServer(app);
 	}
 
+	// Attach Socket.io
+	var io = socketio.listen(server);
+	app.set('socketio', io);
+	app.set('server', server);
+
 	// Return Express server instance
-	return app;
+	return (process.env.NODE_ENV === 'secure') ? server : app;
 };

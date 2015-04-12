@@ -2,9 +2,11 @@
 
 // Deliveries controller
 angular.module('deliveries').controller('DeliveriesController', [
-	'$scope', '$stateParams', '$location', '$modal', 'Authentication', 'Deliveries', 'Consumers',
-	function($scope, $stateParams, $location, $modal, Authentication, Deliveries, Consumers) {
+	'$scope', '$stateParams', '$location', '$modal', 'Socket', 'Authentication', 'Deliveries', 'Consumers',
+	function($scope, $stateParams, $location, $modal, Socket, Authentication, Deliveries, Consumers) {
 		$scope.authentication = Authentication;
+
+		console.log(Socket);
 
 		function initDeliverForm () {
 			var model = {
