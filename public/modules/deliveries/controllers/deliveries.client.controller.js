@@ -86,6 +86,10 @@ angular.module('deliveries').controller('DeliveriesController', [
 			initDeliverForm();
 		};
 
+		$scope.orderSelected = function ($item, $model) {
+			_.pull($scope.consumers, $item);
+		};
+
 		$scope.getDeliveries = function (query) {
 			var query = _.extend({}, query);
 

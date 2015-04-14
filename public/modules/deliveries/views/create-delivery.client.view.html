@@ -16,6 +16,7 @@
                         ng-model="delivery.consumer" 
                         theme="select2" 
                         ng-disabled="disabled" 
+                        on-select="orderSelected($item, $model)"
                         style="min-width: 300px;">
                         <ui-select-match 
                             placeholder="Select a Customer in the list or search his name...">
@@ -89,7 +90,7 @@
                 ng-click="addDelivery()" 
                 class="btn btn-success">
                 <i class="glyphicon glyphicon-plus"></i>
-                Add Another
+                Add Delivery
             </button>
 
             <button 
