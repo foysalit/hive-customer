@@ -100,15 +100,18 @@ exports.delete = function(req, res) {
  * List of Deliveries
  */
 exports.list = function(req, res) { 
-	Delivery.find().sort('-created').populate('user', 'displayName').exec(function(err, deliveries) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			res.jsonp(deliveries);
-		}
-	});
+	Delivery.find(req.query)
+		.sort('-created')
+		.populate('consumer')
+		.exec(function(err, deliveries) {
+			if (err) {
+				return res.status(400).send({
+					message: errorHandler.getErrorMessage(err)
+				});
+			} else {
+				res.jsonp(deliveries);
+			}
+		});
 };
 
 /**

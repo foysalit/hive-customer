@@ -14,7 +14,8 @@ var ApplicationConfiguration = (function() {
 		'ui.bootstrap', 
 		'ui.utils',
 		'ui.select',
-		'btford.socket-io'
+		'btford.socket-io',
+		'smart-table'
 	];
 
 	// Add a new vertical module

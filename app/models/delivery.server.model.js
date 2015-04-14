@@ -36,7 +36,22 @@ var DeliverySchema = new Schema({
 		type: String,
 		validate: [validation.product, 'Product is not valid']
 	},
-	created: {
+	totalTime: {
+		type: String
+	},
+	photoReceipt: {
+		type: String
+	},
+	status: {
+		type: String,
+		trim: true,
+		default: 'unfulfilled',
+		required: true
+	},
+	completedAt: {
+		type: String
+	},
+	createdAt: {
 		type: Date,
 		default: Date.now
 	},

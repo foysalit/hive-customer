@@ -6,8 +6,6 @@ angular.module('deliveries').controller('DeliveriesController', [
 	function($scope, $stateParams, $location, $modal, Socket, Authentication, Deliveries, Consumers) {
 		$scope.authentication = Authentication;
 
-		console.log(Socket);
-
 		function initDeliverForm () {
 			var model = {
 				consumer: '',
@@ -67,6 +65,21 @@ angular.module('deliveries').controller('DeliveriesController', [
 			}
 
 			initDeliverForm();
+		};
+
+		$scope.getDeliveries = function (status) {
+			var query = {};
+
+			if (status) {
+				query.status = status;
+			}
+
+			Deliveries.find(query).success(function (deliveries) {
+				//console.log(deliveries);
+				$scope.deliveries = deliveries;
+			}).error(function (err) {
+				console.log(err);
+			});
 		};
 
 		// Remove existing Delivery

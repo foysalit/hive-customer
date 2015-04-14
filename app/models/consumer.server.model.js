@@ -43,12 +43,6 @@ var ConsumerSchema = new Schema({
 		default: '',
 		validate: [validateProperty, 'Please fill in your phone number']
 	},
-	status: {
-		type: String,
-		trim: true,
-		default: 'unfulfilled',
-		required: true
-	},
 	created: {
 		type: Date,
 		default: Date.now

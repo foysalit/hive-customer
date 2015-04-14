@@ -30,7 +30,8 @@ module.exports = {
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
 				'public/lib/angular-ui-select/dist/select.min.js',
 				//'https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js',
-				'public/lib/angular-socket-io/socket.min.js'
+				'public/lib/angular-socket-io/socket.min.js',
+				'public/lib/angular-smart-table/dist/smart-table.min.js',
 			]
 		},
 		css: [

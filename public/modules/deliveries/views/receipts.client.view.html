@@ -1,0 +1,34 @@
+<section 
+	data-ng-controller="DeliveriesController"
+	data-ng-init="getDeliveries('fulfilled')"
+	>
+	
+	<h2 class="text-center">Completed Deliveries</h2>
+
+	<table st-table="deliveries" class="table table-striped">
+		<thead>
+		<tr>
+			<th>Consumer Name</th>
+			<th>Order Date</th>
+			<th>Delivery Time</th>
+			<th>Deliver Timestamp</th>
+			<th>Photo Receipt</th>
+			<th>Address</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr ng-repeat="delivery in deliveries">
+			<td>
+				{{delivery.consumer.firstName}}
+				{{delivery.consumer.lastName}}
+			</td>
+			<td>{{delivery.createdAt | date:'medium'}}</td>
+			<td>{{delivery.totalTime}}</td>
+			<td>{{delivery.completedAt | date:'medium'}}</td>
+			<td>{{delivery.photoReceipt}}</td>
+			<td>{{delivery.consumer.address}}</td>
+		</tr>
+		</tbody>
+	</table>
+
+</section>

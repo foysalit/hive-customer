@@ -3,8 +3,10 @@
 //Deliveries service used to communicate Deliveries REST endpoints
 angular.module('deliveries').factory('Deliveries', ['$resource', '$http',
 function($resource, $http) {
+	var endPoint = 'deliveries';
+
 	return {
-		resource: $resource('deliveries/:deliveryId', { 
+		resource: $resource(endPoint +'/:deliveryId', { 
 			deliveryId: '@_id'
 		}, {
 			update: {
@@ -12,7 +14,16 @@ function($resource, $http) {
 			}
 		}),
 		saveMultiple: function (deliveries) {
-			return $http.post('deliveries/multiple', deliveries);
+			return $http.post(endPoint +'/multiple', deliveries);
+		},
+		find: function (query) {
+			var options = {};
+
+			if (query) {
+				options.params = query;
+			}
+
+			return $http.get(endPoint, options);
 		}
 	};
 }]);

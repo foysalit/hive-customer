@@ -5,6 +5,10 @@ angular.module('deliveries').config(['$stateProvider',
 	function($stateProvider) {
 		// Deliveries state routing
 		$stateProvider.
+		state('deliveryReceipts', {
+			url: '/deliveries/receipts',
+			templateUrl: 'modules/deliveries/views/receipts.client.view.html'
+		}).
 		state('listDeliveries', {
 			url: '/deliveries',
 			templateUrl: 'modules/deliveries/views/list-deliveries.client.view.html'
