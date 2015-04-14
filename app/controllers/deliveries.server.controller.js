@@ -64,7 +64,7 @@ exports.read = function(req, res) {
  * Update a Delivery
  */
 exports.update = function(req, res) {
-	var delivery = req.delivery ;
+	var delivery = req.delivery;
 
 	delivery = _.extend(delivery , req.body);
 
@@ -74,6 +74,8 @@ exports.update = function(req, res) {
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
+			var socketio = req.app.get('socketio');
+			socketio.sockets.emit('deliveries.update', delivery);
 			res.jsonp(delivery);
 		}
 	});

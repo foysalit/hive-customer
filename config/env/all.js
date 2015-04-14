@@ -32,6 +32,7 @@ module.exports = {
 				//'https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js',
 				'public/lib/angular-socket-io/socket.min.js',
 				'public/lib/angular-smart-table/dist/smart-table.min.js',
+				'public/lib/lodash/lodash.min.js',
 			]
 		},
 		css: [

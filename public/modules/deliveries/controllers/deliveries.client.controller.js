@@ -2,8 +2,8 @@
 
 // Deliveries controller
 angular.module('deliveries').controller('DeliveriesController', [
-	'$scope', '$stateParams', '$location', '$modal', 'Socket', 'Authentication', 'Deliveries', 'Consumers',
-	function($scope, $stateParams, $location, $modal, Socket, Authentication, Deliveries, Consumers) {
+	'$scope', '$state', '$stateParams', '$location', '$modal', 'Socket', 'Authentication', 'Deliveries', 'Consumers',
+	function($scope, $state, $stateParams, $location, $modal, Socket, Authentication, Deliveries, Consumers) {
 		$scope.authentication = Authentication;
 
 		function initDeliverForm () {
@@ -39,6 +39,25 @@ angular.module('deliveries').controller('DeliveriesController', [
 			});
 		}
 
+		function showPhotoReceipt (delivery) {
+			var modalInstance = $modal.open({
+				templateUrl: 'modules/deliveries/views/photo-receipt-modal.client.view.html',
+				controller: function ($scope, $modalInstance, delivery) {
+					$scope.delivery = delivery;
+					
+					$scope.closeModal = function () {
+						$modalInstance.dismiss('cancel');
+					};
+				},
+				//size: 'size',
+				resolve: {
+					delivery: function () {
+						return delivery;
+					}
+				}
+			});
+		}
+
 		//if (!$stateParams.from_consumer)
 			initDeliverForm();
 
@@ -67,11 +86,11 @@ angular.module('deliveries').controller('DeliveriesController', [
 			initDeliverForm();
 		};
 
-		$scope.getDeliveries = function (status) {
-			var query = {};
+		$scope.getDeliveries = function (query) {
+			var query = _.extend({}, query);
 
-			if (status) {
-				query.status = status;
+			if ($state.is('deliveryReceipts')) {
+				query.status = 'fulfilled';
 			}
 
 			Deliveries.find(query).success(function (deliveries) {
@@ -81,6 +100,12 @@ angular.module('deliveries').controller('DeliveriesController', [
 				console.log(err);
 			});
 		};
+
+		Socket.on('deliveries.update', function (data) {
+			$scope.getDeliveries();
+		});
+
+		$scope.showPhotoReceipt = showPhotoReceipt;
 
 		// Remove existing Delivery
 		$scope.remove = function(delivery) {

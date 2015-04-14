@@ -1,6 +1,6 @@
 <section 
 	data-ng-controller="DeliveriesController"
-	data-ng-init="getDeliveries('fulfilled')"
+	data-ng-init="getDeliveries()"
 	>
 	
 	<h2 class="text-center">Completed Deliveries</h2>
@@ -25,7 +25,13 @@
 			<td>{{delivery.createdAt | date:'medium'}}</td>
 			<td>{{delivery.totalTime}}</td>
 			<td>{{delivery.completedAt | date:'medium'}}</td>
-			<td>{{delivery.photoReceipt}}</td>
+			<td>
+				<button 
+					data-ng-click="showPhotoReceipt(delivery)" 
+					class="btn btn-primary btn-sm">
+					View
+				</button>
+			</td>
 			<td>{{delivery.consumer.address}}</td>
 		</tr>
 		</tbody>
