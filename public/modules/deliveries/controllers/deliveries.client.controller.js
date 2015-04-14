@@ -26,8 +26,9 @@ angular.module('deliveries').controller('DeliveriesController', [
 				controller: function ($scope, $modalInstance, deliveries) {
 					$scope.deliveries = deliveries;
 					
-					$scope.closeConfirmation = function () {
+					$scope.closeConfirmation = function (path) {
 						$modalInstance.dismiss('cancel');
+						$location.path(path);
 					};
 				},
 				//size: 'size',

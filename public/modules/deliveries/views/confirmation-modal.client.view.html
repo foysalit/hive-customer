@@ -11,12 +11,10 @@
     </ul>
 </div>
 <div class="modal-footer">
-    <a 
-        ng-click="closeConfirmation()"
-        class="btn btn-primary" 
-        href="#!/deliveries/create">Add More</a>
-    <a 
-        ng-click="closeConfirmation()"
-        class="btn btn-success" 
-        href="#!/deliveries">View Deliveries</a>
+    <button 
+        ng-click="closeConfirmation('deliveries/create')"
+        class="btn btn-primary" >Add More</button>
+    <button 
+        ng-click="closeConfirmation('/')"
+        class="btn btn-success">Home</button>
 </div>
