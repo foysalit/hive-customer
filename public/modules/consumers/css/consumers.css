@@ -1,6 +1,7 @@
 #map_canvas {
     position: relative;
     height: 400px;
+    margin-top: 10px;
 }
 
 .angular-google-map-container {

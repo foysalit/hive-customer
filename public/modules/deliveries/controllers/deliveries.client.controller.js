@@ -1,5 +1,7 @@
 'use strict';
 
+/* global _:true */
+
 // Deliveries controller
 angular.module('deliveries').controller('DeliveriesController', [
 	'$scope', '$state', '$stateParams', '$location', '$modal', 'Socket', 'Authentication', 'Deliveries', 'Consumers',
@@ -91,8 +93,8 @@ angular.module('deliveries').controller('DeliveriesController', [
 			_.pull($scope.consumers, $item);
 		};
 
-		$scope.getDeliveries = function (query) {
-			var query = _.extend({}, query);
+		$scope.getDeliveries = function (q) {
+			var query = _.extend({}, q);
 
 			if ($state.is('deliveryReceipts')) {
 				query.status = 'fulfilled';

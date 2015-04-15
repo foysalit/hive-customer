@@ -1,5 +1,7 @@
 'use strict';
 
+/* global google:true */
+
 // Consumers controller
 angular.module('consumers').controller('ConsumersController', [
 	'$scope', '$state', '$stateParams', '$location', 'Authentication', 'Consumers',
@@ -24,14 +26,97 @@ angular.module('consumers').controller('ConsumersController', [
 			options: {scrollwheel: false}
 		};
 
+		$scope.mapMarker = {
+		    id: 0,
+		    coords: $scope.mapConfig.center,
+		    options: { draggable: true },
+		    events: {
+		        dragend: function (marker, eventName, args) {
+		            $scope.mapMarker.options = {
+		                draggable: true,
+		                labelAnchor: '100 0',
+		                labelClass: 'marker-labels'
+		            };
+
+		            var latlng = new google.maps.LatLng(
+		            	$scope.mapMarker.coords.latitude,
+		            	$scope.mapMarker.coords.longitude
+		            );
+
+		            if (withinArea(latlng)) {
+		            	$scope.error = 'Address is not within range!';
+		            	return;
+		            }
+		            
+		            Geocoder.geocode({'latLng': latlng }, function(results, status) {
+						if (status !== google.maps.GeocoderStatus.OK) 
+							return console.log('google maps error', status);
+
+						if (results.length <= 0)
+							return console.log('error in results', results);
+
+						//console.log(results[0].formatted_address, $scope.firstName);
+						$scope.address = results[0].formatted_address;
+						$scope.$apply();
+					});
+		        }
+		    }
+		};
+
+		var Geocoder = new google.maps.Geocoder();
+
 		$scope.mapSearchBoxConfig = {
 			options: {
 				types: ['address']
 			},
-			events: 'places_changed',
+			events: {
+				places_changed: function (searchBox) {
+			        var place = searchBox.getPlaces();
+			        if (!place || place.length === 0) {
+			            console.log('no place data :(');
+			            return;
+			        }
+
+			        var position = {
+			        	latitude: place[0].geometry.location.lat(),
+			        	longitude: place[0].geometry.location.lng()
+			        };
+
+			        $scope.mapConfig.center = position;
+			        $scope.mapMarker.coords = position;
+			    }
+			},
 			template: 'places-autocomplete-template.tmpl.html',
 			parentDiv: 'address_input'
 		};
+
+		function withinArea (location) {
+			var adamsMorgan = new google.maps.Polygon({
+	    			paths: [
+					    new google.maps.LatLng('38.923275', '-77.047486'),
+					    new google.maps.LatLng('38.922724', '-77.042701'),
+					    new google.maps.LatLng('38.926530', '-77.036479'),
+					    new google.maps.LatLng('38.919134', '-77.036500'),
+					    new google.maps.LatLng('38.914410', '-77.046113'),
+					    new google.maps.LatLng('38.919268', '-77.049053')
+					    //new google.maps.LatLng("38.923275", "-77.047486"),
+					]
+	  			}),
+				lanierHeights = new google.maps.Polygon({
+	    			paths: [
+					    new google.maps.LatLng('38.926973', '-77.036481'),
+					    new google.maps.LatLng('38.927340', '-77.044248'),
+					    new google.maps.LatLng('38.923518', '-77.048540'),
+					    new google.maps.LatLng('38.922700', '-77.042596'),
+					    new google.maps.LatLng('38.926556', '-77.036438')
+					]
+	  			});
+
+  			var withinAdamsMorgan = google.maps.geometry.poly.containsLocation(location, adamsMorgan),
+  				withinLanierHeights = google.maps.geometry.poly.containsLocation(location, lanierHeights);
+
+  			return withinAdamsMorgan || withinLanierHeights;
+		}
 
 		// Create new Consumer
 		$scope.create = function() {

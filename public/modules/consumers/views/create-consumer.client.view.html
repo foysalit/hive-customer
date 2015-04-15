@@ -27,11 +27,17 @@
                                 center="mapConfig.center"
                                 zoom="mapConfig.zoom">
                                 <ui-gmap-search-box
+                                    ng-model="address"
                                     parentdiv="mapSearchBoxConfig.parentDiv"
                                     events="mapSearchBoxConfig.events"
                                     template="mapSearchBoxConfig.template"
                                     options="mapSearchBoxConfig.options">
                                 </ui-gmap-search-box>
+                                <ui-gmap-marker 
+                                    coords="mapMarker.coords" 
+                                    options="mapMarker.options" 
+                                    events="mapMarker.events" 
+                                    idkey="mapMarker.id">
                             </ui-gmap-google-map>
                         </div>
                     </div>
@@ -61,7 +67,7 @@
     <script type="text/ng-template" id="places-autocomplete-template.tmpl.html">
         <input 
             type="text" 
-            data-ng-model="address" 
+            ng-model="ngModel" 
             id="address" 
             class="form-control" 
             placeholder="Address" 
