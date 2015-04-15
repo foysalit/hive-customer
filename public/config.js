@@ -15,7 +15,8 @@ var ApplicationConfiguration = (function() {
 		'ui.utils',
 		'ui.select',
 		'btford.socket-io',
-		'smart-table'
+		'smart-table',
+		'uiGmapgoogle-maps'
 	];
 
 	// Add a new vertical module

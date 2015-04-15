@@ -33,6 +33,8 @@ module.exports = {
 				'public/lib/angular-socket-io/socket.min.js',
 				'public/lib/angular-smart-table/dist/smart-table.min.js',
 				'public/lib/lodash/lodash.min.js',
+				'http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false&language=en&v=3.17',
+				'public/lib/angular-google-maps/dist/angular-google-maps.min.js'
 			]
 		},
 		css: [

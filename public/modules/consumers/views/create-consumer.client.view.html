@@ -2,6 +2,7 @@
     <div class="page-header">
         <h1>New Order</h1>
     </div>
+
     <div class="col-md-12">
         <form class="form-horizontal" data-ng-submit="create()" novalidate>
             <fieldset>
@@ -20,7 +21,19 @@
                 <div class="form-group">
                     <label class="control-label" for="name">Address</label>
                     <div class="controls">
-                        <input type="text" data-ng-model="address" id="address" class="form-control" placeholder="Address" required>
+                        <div id="address_input"></div>
+                        <div id="map_canvas">
+                            <ui-gmap-google-map
+                                center="mapConfig.center"
+                                zoom="mapConfig.zoom">
+                                <ui-gmap-search-box
+                                    parentdiv="mapSearchBoxConfig.parentDiv"
+                                    events="mapSearchBoxConfig.events"
+                                    template="mapSearchBoxConfig.template"
+                                    options="mapSearchBoxConfig.options">
+                                </ui-gmap-search-box>
+                            </ui-gmap-google-map>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -44,4 +57,14 @@
             </fieldset>
         </form>
     </div>
+
+    <script type="text/ng-template" id="places-autocomplete-template.tmpl.html">
+        <input 
+            type="text" 
+            data-ng-model="address" 
+            id="address" 
+            class="form-control" 
+            placeholder="Address" 
+            required>
+    </script>
 </section>

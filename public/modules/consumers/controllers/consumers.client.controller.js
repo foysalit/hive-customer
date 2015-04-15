@@ -15,6 +15,24 @@ angular.module('consumers').controller('ConsumersController', [
 			$scope.phone = '';
 		}
 
+		$scope.mapConfig = {
+			center: {
+				latitude: '38.920495',
+				longitude: '-77.0427765'
+			},
+			zoom: 15,
+			options: {scrollwheel: false}
+		};
+
+		$scope.mapSearchBoxConfig = {
+			options: {
+				types: ['address']
+			},
+			events: 'places_changed',
+			template: 'places-autocomplete-template.tmpl.html',
+			parentDiv: 'address_input'
+		};
+
 		// Create new Consumer
 		$scope.create = function() {
 			// Create new Consumer object
