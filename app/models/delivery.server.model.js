@@ -32,10 +32,6 @@ var DeliverySchema = new Schema({
 		type: Number,
 		validate: [validation.compartment, 'Compartment is not valid']
 	},
-	product: {
-		type: String,
-		validate: [validation.product, 'Product is not valid']
-	},
 	totalTime: {
 		type: String
 	},

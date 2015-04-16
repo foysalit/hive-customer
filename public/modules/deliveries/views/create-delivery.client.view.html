@@ -1,18 +1,28 @@
 <section data-ng-controller="DeliveriesController">
     <div class="page-header">
-        <h1>New Delivery</h1>
+        <h2 class="pull-left">New Delivery</h2>
+
+        <h2 class="pull-right">
+            {{ calculateTotal() | currency:"Total: $":0 }}
+        </h2>
+        <div class="clearfix"></div>
     </div>
 
-    <div class="row">
+    <div class="row" ng-show="errors.has()">
+        <div class="alert alert-danger" ng-repeat="err in errors.all">
+            {{ err }}
+        </div>
+    </div>
+
     <div class="col-md-12" ng-init="getConsumers()">
         <form class="form-horizontal" data-ng-submit="create()" novalidate>
-            <fieldset ng-repeat="delivery in deliveries">
+            <div ng-repeat="delivery in deliveries">
             <!-- needs to be only the active ones. not the inactive -->
             <!-- google maps check for radius of the address of the order and reject if it falls out of the area. -->
             <!-- add products select options small, medium, large pizza -->
             <!-- reload page when confirmation ends -->
                 <div class="form-group">
-                    <label class="control-label" for="price">Select Customer</label>
+                    <label class="control-label" for="price">Select Order</label>
                     <ui-select 
                         ng-model="delivery.consumer" 
                         theme="select2" 
@@ -20,7 +30,7 @@
                         on-select="orderSelected($item, $model)"
                         style="min-width: 300px;">
                         <ui-select-match 
-                            placeholder="Select a Customer in the list or search his name...">
+                            placeholder="Select an Order in the list or search customer...">
                             {{$select.selected.firstName}} {{$select.selected.lastName}}
                         </ui-select-match>
 
@@ -38,54 +48,31 @@
                             </small>
                         </ui-select-choices>
                     </ui-select>
+                    <div class="pull-right">
+                        <i 
+                            data-ng-show="$index > 0"
+                            data-ng-click="cancelDelivery(delivery)" 
+                            class="glyphicon glyphicon-remove"></i>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="radio-inline">
-                        <input 
-                            type="radio"
-                            ng-model="delivery.product"
-                            name="product-{{$index}}" 
-                            value="large-pizza">
-                        Large Pizza
-                    </label>
-                    <label class="radio-inline">
-                        <input 
-                            type="radio"
-                            ng-model="delivery.product"
-                            name="product-{{$index}}" 
-                            value="medium-pizza">
-                        Medium Pizza
-                    </label>
-                    <label class="radio-inline">
-                        <input 
-                            type="radio"
-                            ng-model="delivery.product"
-                            name="product-{{$index}}" 
-                            value="small-pizza">
-                        Small Pizza
-                    </label>
-                </div>
-
-                <div class="form-group">
-                    <a href="#!/consumers/create?from_delivery=true" class="btn btn-default">Add Order</a>
-                </div>
 				<div data-ng-show="error" class="text-danger">
 					<strong data-ng-bind="error"></strong>
 				</div>
-            </fieldset>
+            </div>
         </form>
     </div>
-    </div>
     
     <div class="row">
-        <div class="alert alert-danger" ng-if="globalError">
-            {{ globalError }}
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
+            <a
+                data-ng-hide="hasOrdersInQueue()"
+                href="#!/consumers/create?from_delivery=true" 
+                class="btn btn-warning">
+                <i class="glyphicon glyphicon-plus"></i>
+                Add Order
+            </a>
+
             <button
                 type="button" 
                 ng-click="addDelivery()" 
@@ -100,12 +87,6 @@
                 class="btn btn-success">
                 <i class="glyphicon glyphicon-ok"></i>
                 Submit
-            </button>
-        </div>
-
-        <div class="col-md-4">
-            <button class="btn btn-block btn-primary">
-                {{ calculateTotal() | currency:"Total: $":0 }}
             </button>
         </div>
     </div>

@@ -5,13 +5,13 @@ angular.module('consumers').config(['$stateProvider',
 	function($stateProvider) {
 		// Consumers state routing
 		$stateProvider.
-		state('listConsumers', {
-			url: '/consumers',
-			templateUrl: 'modules/consumers/views/list-consumers.client.view.html'
-		}).
 		state('createConsumer', {
 			url: '/consumers/create?from_delivery',
 			templateUrl: 'modules/consumers/views/create-consumer.client.view.html'
+		}).
+		state('listConsumersByStatus', {
+			url: '/consumers/status/:status',
+			templateUrl: 'modules/consumers/views/list-consumers.client.view.html'
 		}).
 		state('viewConsumer', {
 			url: '/consumers/:consumerId',

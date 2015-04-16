@@ -4,9 +4,11 @@
 
 // Consumers controller
 angular.module('consumers').controller('ConsumersController', [
-	'$scope', '$state', '$stateParams', '$location', 'Authentication', 'Consumers',
-	function($scope, $state, $stateParams, $location, Authentication, Consumers) {
+	'$scope', '$state', '$stateParams', '$location', 'Authentication', 'Consumers', 'Errors',
+	function($scope, $state, $stateParams, $location, Authentication, Consumers, Errors) {
 		$scope.authentication = Authentication;
+		$scope.errors = Errors;
+		//console.log(Errors);
 
 		// Clear form fields
 		function initializeForm () {
@@ -15,6 +17,7 @@ angular.module('consumers').controller('ConsumersController', [
 			$scope.address = '';
 			$scope.apartment = '';
 			$scope.phone = '';
+			$scope.product = '';
 		}
 
 		$scope.mapConfig = {
@@ -43,12 +46,12 @@ angular.module('consumers').controller('ConsumersController', [
 		            	$scope.mapMarker.coords.longitude
 		            );
 
-		            if (withinArea(latlng)) {
-		            	$scope.error = 'Address is not within range!';
+		            if (!withinArea(latlng)) {
+		            	$scope.errors.add('address', 'Address is not within range!');
 		            	return;
 		            }
 		            
-		            Geocoder.geocode({'latLng': latlng }, function(results, status) {
+		            Geocoder.geocode({'latLng': latlng}, function(results, status) {
 						if (status !== google.maps.GeocoderStatus.OK) 
 							return console.log('google maps error', status);
 
@@ -57,6 +60,7 @@ angular.module('consumers').controller('ConsumersController', [
 
 						//console.log(results[0].formatted_address, $scope.firstName);
 						$scope.address = results[0].formatted_address;
+						$scope.errors.remove('address');
 						$scope.$apply();
 					});
 		        }
@@ -82,8 +86,10 @@ angular.module('consumers').controller('ConsumersController', [
 			        	longitude: place[0].geometry.location.lng()
 			        };
 
+			        //console.log(place);
 			        $scope.mapConfig.center = position;
 			        $scope.mapMarker.coords = position;
+			        $scope.address = place[0].formatted_address;
 			    }
 			},
 			template: 'places-autocomplete-template.tmpl.html',
@@ -121,11 +127,12 @@ angular.module('consumers').controller('ConsumersController', [
 		// Create new Consumer
 		$scope.create = function() {
 			// Create new Consumer object
-			var consumer = new Consumers ({
+			var consumer = new Consumers.resources ({
 				firstName: this.firstName,
 				lastName: this.lastName,
 				address: this.address,
 				apartment: this.apartment,
+				product: this.product,
 				phone: this.phone
 			});
 
@@ -137,17 +144,20 @@ angular.module('consumers').controller('ConsumersController', [
 					return $state.go('createDelivery', {from_consumer: true});
 				}
 
-				return $location.path('consumers/' + response._id);
+				return $location.path('consumers/status/queue');
 			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
+				$scope.errors.add('form', errorResponse.data.message);
 			});
 		};
 
 		// Remove existing Consumer
 		$scope.remove = function(consumer) {
 			if ( consumer ) { 
-				consumer.$remove();
-
+				if (_.has(consumer, '$remove'))
+					consumer.$remove();
+				else
+					Consumers.remove(consumer);
+				
 				for (var i in $scope.consumers) {
 					if ($scope.consumers [i] === consumer) {
 						$scope.consumers.splice(i, 1);
@@ -167,18 +177,22 @@ angular.module('consumers').controller('ConsumersController', [
 			consumer.$update(function() {
 				$location.path('consumers/' + consumer._id);
 			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
+				$scope.errors.add('form', errorResponse.data.message);
 			});
 		};
 
 		// Find a list of Consumers
 		$scope.find = function() {
-			$scope.consumers = Consumers.query();
+			Consumers.find({status: $stateParams.status}).success(function (res) {
+				$scope.consumers = res;
+			}).error(function (err) {
+				$scope.errors.add('form', err.data.message);
+			});
 		};
 
 		// Find existing Consumer
 		$scope.findOne = function() {
-			$scope.consumer = Consumers.get({ 
+			$scope.consumer = Consumers.resources.get({ 
 				consumerId: $stateParams.consumerId
 			});
 		};

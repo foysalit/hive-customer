@@ -4,9 +4,10 @@
 
 // Deliveries controller
 angular.module('deliveries').controller('DeliveriesController', [
-	'$scope', '$state', '$stateParams', '$location', '$modal', 'Socket', 'Authentication', 'Deliveries', 'Consumers',
-	function($scope, $state, $stateParams, $location, $modal, Socket, Authentication, Deliveries, Consumers) {
+	'$scope', '$state', '$stateParams', '$location', '$modal', 'Socket', 'Authentication', 'Deliveries', 'Consumers', 'Errors',
+	function($scope, $state, $stateParams, $location, $modal, Socket, Authentication, Deliveries, Consumers, Errors) {
 		$scope.authentication = Authentication;
+		$scope.errors = Errors;
 
 		function initDeliverForm () {
 			var model = {
@@ -28,7 +29,7 @@ angular.module('deliveries').controller('DeliveriesController', [
 				controller: function ($scope, $modalInstance, deliveries) {
 					$scope.deliveries = deliveries;
 					
-					$scope.closeConfirmation = function (path) {
+					$scope.goHome = function (path) {
 						$modalInstance.dismiss('cancel');
 						$location.path(path);
 					};
@@ -68,6 +69,12 @@ angular.module('deliveries').controller('DeliveriesController', [
 		$scope.create = function() {
 			// Create new Delivery object
 			//return console.log($scope.deliveries);
+			var validation = Deliveries.validateMultiple($scope.deliveries);
+
+			if (validation !== true && _.has(validation, 'error')) {
+				return $scope.errors.add('form', validation.error);
+			}
+
 			Deliveries.saveMultiple($scope.deliveries).success(function (response) {
 				if (response.error) {
 					return console.log('error', response);
@@ -76,21 +83,29 @@ angular.module('deliveries').controller('DeliveriesController', [
 				showConfirmation($scope.deliveries);
 			}).error(function (err) {
 				console.log('error', err);
-				$scope.error = err.data.message;
+				$scope.errors.add('form', err.data.message);
 			});
 		};
 
 		$scope.addDelivery = function () {
 			if ($scope.deliveries.length >= 3) {
-				$scope.globalError = 'Max 3 deliveries are allowed!';
+				$scope.errors.add('form', 'Max 3 deliveries are allowed!');
 				return;
 			}
 
 			initDeliverForm();
 		};
 
+		$scope.cancelDelivery = function (delivery) {
+			_.pull($scope.deliveries, delivery);	
+		};
+
 		$scope.orderSelected = function ($item, $model) {
 			_.pull($scope.consumers, $item);
+		};
+
+		$scope.hasOrdersInQueue = function () {
+			return _.size($scope.consumers) > 0;
 		};
 
 		$scope.getDeliveries = function (q) {
@@ -138,7 +153,7 @@ angular.module('deliveries').controller('DeliveriesController', [
 			delivery.$update(function() {
 				$location.path('deliveries/' + delivery._id);
 			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
+				$scope.errors.add('form', errorResponse.data.message);
 			});
 		};
 
@@ -148,7 +163,11 @@ angular.module('deliveries').controller('DeliveriesController', [
 		};
 
 		$scope.getConsumers = function () {
-			$scope.consumers = Consumers.query();
+			Consumers.find({status: 'queue'}).success(function (res) {
+				$scope.consumers = res;
+			}).error(function (err) {
+				$scope.errors.add('form', err.data.message);
+			});
 		};
 
 		// Find existing Delivery

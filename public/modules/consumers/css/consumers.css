@@ -11,3 +11,16 @@
     right: 0;
     left: 0;
 }
+
+.consumers-list-item {
+	padding: 2%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	-webkit-box-shadow: 0 0 9px -2px #D0C8C8;
+	box-shadow: 0 0 9px -2px #D0C8C8;
+}
+
+.consumers-list-item .glyphicon-remove {
+	color: #830707;
+	cursor: pointer;
+}

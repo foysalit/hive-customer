@@ -6,6 +6,7 @@
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	Delivery = mongoose.model('Delivery'),
+	Consumer = mongoose.model('Consumer'),
 	_ = require('lodash');
 
 /**
@@ -33,13 +34,16 @@ exports.createMultiple = function(req, res) {
 	var deliveries = [];
 
 	_.each(req.body, function (delivery) {
+		//console.log(delivery.consumer);
+		Consumer.update({_id: delivery.consumer._id}, {status: 'delivery'}, {});
+
 		delivery.user = req.user;
 		delivery.consumer = delivery.consumer._id;
 		deliveries.push(delivery);
 	});
 
 	Delivery.create(deliveries, function(err, result) {
-		console.log(err, result);
+		//console.log(err, result);
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)

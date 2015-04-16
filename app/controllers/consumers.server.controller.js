@@ -73,7 +73,10 @@ exports.delete = function(req, res) {
  * List of Consumers
  */
 exports.list = function(req, res) { 
-	Consumer.find().sort('-created').populate('user', 'displayName').exec(function(err, consumers) {
+	Consumer.find(req.query)
+		.sort('-created')
+		.populate('user', 'displayName')
+		.exec(function(err, consumers) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)

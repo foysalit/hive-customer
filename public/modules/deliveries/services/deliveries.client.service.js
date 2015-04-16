@@ -24,6 +24,27 @@ function($resource, $http) {
 			}
 
 			return $http.get(endPoint, options);
+		},
+		validateMultiple: function (deliveries) {
+			var self = this;
+
+			for (var i = 0; i < deliveries.length; i++) {
+				var validation = self.validate(deliveries[i]);
+
+				if (validation.error)
+					return validation;
+			}
+
+			return true;
+		},
+		validate: function (delivery) {
+			if (_.isUndefined(delivery.consumer) || _.isEmpty(delivery.consumer))
+				return {error: 'Must select a consumer'};
+			
+			if (delivery.consumer.status !== 'queue')
+				return {error: 'Only queued orders can be delivered'};
+
+			return {error: false};
 		}
 	};
 }]);

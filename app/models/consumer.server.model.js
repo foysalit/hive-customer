@@ -4,10 +4,17 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-	Schema = mongoose.Schema;
+	Schema = mongoose.Schema,
+	_ = require('lodash');
 
-var validateProperty = function(property) {
-	return (!this.updated || property.length);
+var validation = {
+	product: function (product) {
+		var availableProducts = ['large-pizza', 'medium-pizza', 'small-pizza'];
+		return product.length && _.contains(availableProducts, product);
+	},
+	general: function(property) {
+		return property.length;
+	}
 };
 
 /**
@@ -18,19 +25,19 @@ var ConsumerSchema = new Schema({
 		type: String,
 		trim: true,
 		default: '',
-		validate: [validateProperty, 'Please fill in consumer\'s first name']
+		validate: [validation.general, 'Please fill in consumer\'s first name']
 	},
 	lastName: {
 		type: String,
 		trim: true,
 		default: '',
-		validate: [validateProperty, 'Please fill in consumer\'s last name']
+		validate: [validation.general, 'Please fill in consumer\'s last name']
 	},
 	address: {
 		type: String,
 		trim: true,
 		default: '',
-		validate: [validateProperty, 'Please fill in consumer\'s address']
+		validate: [validation.general, 'Please fill in consumer\'s address']
 	},
 	apartment: {
 		type: String,
@@ -40,8 +47,19 @@ var ConsumerSchema = new Schema({
 	phone: {
 		type: String,
 		trim: true,
+		default: ''
+	},
+	product: {
+		type: String,
+		trim: true,
 		default: '',
-		validate: [validateProperty, 'Please fill in your phone number']
+		validate: [validation.product, 'Product is not valid']
+	},
+	status: {
+		type: String,
+		trim: true,
+		default: 'queue',
+		required: true
 	},
 	created: {
 		type: Date,
