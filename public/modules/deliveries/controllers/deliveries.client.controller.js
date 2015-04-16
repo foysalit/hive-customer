@@ -101,11 +101,12 @@ angular.module('deliveries').controller('DeliveriesController', [
 		};
 
 		$scope.orderSelected = function ($item, $model) {
-			_.pull($scope.consumers, $item);
+			
+
 		};
 
 		$scope.hasOrdersInQueue = function () {
-			return _.size($scope.consumers) > 0;
+			return _.size($scope.selectableConsumers()) > 0;
 		};
 
 		$scope.getDeliveries = function (q) {
@@ -168,6 +169,17 @@ angular.module('deliveries').controller('DeliveriesController', [
 			}).error(function (err) {
 				$scope.errors.add('form', err.data.message);
 			});
+		};
+		$scope.selectableConsumers = function () {
+			var consumers = $scope.consumers;
+			if (!consumers)
+				return null;
+
+			_.each($scope.deliveries, function (del) {
+				consumers = _.without(consumers, del.consumer);
+			});
+
+			return consumers;
 		};
 
 		// Find existing Delivery
