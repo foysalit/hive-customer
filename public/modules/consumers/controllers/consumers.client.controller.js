@@ -1,6 +1,6 @@
 'use strict';
 
-/* global google:true */
+/* global google:true, _:true */
 
 // Consumers controller
 angular.module('consumers').controller('ConsumersController', [

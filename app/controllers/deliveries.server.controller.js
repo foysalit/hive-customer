@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	Delivery = mongoose.model('Delivery'),
 	Consumer = mongoose.model('Consumer'),
+	Async = require('async'),
 	_ = require('lodash');
 
 /**
@@ -33,27 +34,43 @@ exports.create = function(req, res) {
 exports.createMultiple = function(req, res) {
 	var deliveries = [];
 
-	_.each(req.body, function (delivery) {
+	function buildDeliveries(delivery, consumerUpdated) {
 		//console.log(delivery.consumer);
-		Consumer.update({_id: delivery.consumer._id}, {status: 'delivery'}, {});
+		Consumer.update({
+			_id: delivery.consumer._id
+		}, {
+			status: 'delivery'
+		}, {}, function (err, d) {
+			if (err)
+				return consumerUpdated(err);
 
-		delivery.user = req.user;
-		delivery.consumer = delivery.consumer._id;
-		deliveries.push(delivery);
-	});
+			delivery.user = req.user;
+			delivery.consumer = delivery.consumer._id;
+			deliveries.push(delivery);
+			consumerUpdated(null);
+		});
+	}
 
-	Delivery.create(deliveries, function(err, result) {
-		//console.log(err, result);
+	Async.each(req.body, buildDeliveries, function (err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
-		} else {
-			res.json({
-				error: false,
-				deliveries: deliveries
-			});
 		}
+
+		Delivery.create(deliveries, function(err, result) {
+			//console.log(err, result);
+			if (err) {
+				return res.status(400).send({
+					message: errorHandler.getErrorMessage(err)
+				});
+			} else {
+				res.json({
+					error: false,
+					deliveries: deliveries
+				});
+			}
+		});
 	});
 };
 

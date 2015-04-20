@@ -13,7 +13,7 @@ var FeedSchema = new Schema({
 	text: {
 		type: String,
 		default: '',
-		required: 'Please fill Feed name',
+		required: 'Please fill Feed content',
 		trim: true
 	},
 	type: {
@@ -24,9 +24,9 @@ var FeedSchema = new Schema({
 		type: Date,
 		default: Date.now
 	},
-	user: {
+	delivery: {
 		type: Schema.ObjectId,
-		ref: 'User'
+		ref: 'Delivery'
 	}
 });
 

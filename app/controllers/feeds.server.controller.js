@@ -13,7 +13,6 @@ var mongoose = require('mongoose'),
  */
 exports.create = function(req, res) {
 	var feed = new Feed(req.body);
-	feed.user = req.user;
 
 	feed.save(function(err) {
 		if (err) {
@@ -21,6 +20,8 @@ exports.create = function(req, res) {
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
+			var socketio = req.app.get('socketio');
+			socketio.sockets.emit('feeds.new', feed);
 			res.jsonp(feed);
 		}
 	});
@@ -73,15 +74,18 @@ exports.delete = function(req, res) {
  * List of Feeds
  */
 exports.list = function(req, res) { 
-	Feed.find().sort('-created').populate('user', 'displayName').exec(function(err, feeds) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			res.jsonp(feeds);
-		}
-	});
+	Feed.find()
+		.sort('-createdAt')
+		.populate('delivery')
+		.exec(function(err, feeds) {
+			if (err) {
+				return res.status(400).send({
+					message: errorHandler.getErrorMessage(err)
+				});
+			} else {
+				res.jsonp(feeds);
+			}
+		});
 };
 
 /**

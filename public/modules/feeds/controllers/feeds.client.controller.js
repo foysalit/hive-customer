@@ -1,27 +1,16 @@
 'use strict';
 
 // Feeds controller
-angular.module('feeds').controller('FeedsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Feeds',
-	function($scope, $stateParams, $location, Authentication, Feeds) {
+angular.module('feeds').controller('FeedsController', [
+	'$scope', '$stateParams', '$location', 'Socket', 'Authentication', 'Feeds',
+	function($scope, $stateParams, $location, Socket, Authentication, Feeds) {
 		$scope.authentication = Authentication;
 
-		// Create new Feed
-		$scope.create = function() {
-			// Create new Feed object
-			var feed = new Feeds ({
-				name: this.name
-			});
+		Socket.on('feeds.new', function (data) {
+			console.log(data);
 
-			// Redirect after save
-			feed.$save(function(response) {
-				$location.path('feeds/' + response._id);
-
-				// Clear form fields
-				$scope.name = '';
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
+			$scope.feeds.push(data);
+		});
 
 		// Remove existing Feed
 		$scope.remove = function(feed) {
@@ -40,26 +29,13 @@ angular.module('feeds').controller('FeedsController', ['$scope', '$stateParams',
 			}
 		};
 
-		// Update existing Feed
-		$scope.update = function() {
-			var feed = $scope.feed;
-
-			feed.$update(function() {
-				$location.path('feeds/' + feed._id);
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
-
 		// Find a list of Feeds
 		$scope.find = function() {
-			$scope.feeds = Feeds.query();
-		};
-
-		// Find existing Feed
-		$scope.findOne = function() {
-			$scope.feed = Feeds.get({ 
-				feedId: $stateParams.feedId
+			Feeds.find().success(function (feeds) {
+				console.log(feeds);
+				$scope.feeds = feeds;
+			}).error(function (err) {
+				console.log(err);
 			});
 		};
 	}

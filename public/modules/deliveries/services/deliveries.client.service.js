@@ -1,6 +1,7 @@
 'use strict';
 
 //Deliveries service used to communicate Deliveries REST endpoints
+/* global _:true */
 angular.module('deliveries').factory('Deliveries', ['$resource', '$http',
 function($resource, $http) {
 	var endPoint = 'deliveries';
